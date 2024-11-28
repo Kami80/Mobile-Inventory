@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mobile Inventory</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="text-center mb-4">Mobile Inventory</h1>
+
+        <div class="d-flex justify-content-between mb-3">
+            <a href="{% url 'add_mobile' %}" class="btn btn-primary">Add New Mobile</a>
+            <a href="{% url 'add_brand' %}" class="btn btn-secondary">Add New Brand</a>
+            <input id="searchBox" type="text" class="form-control w-25" placeholder="Search...">
+        </div>
+        note: Countries with <i style="color: chocolate;">chocolate</i> color have different brand nationality and manufacturing country.
+        <table class="table table-striped table-hover" id="inventoryTable">
+            <thead class="table-dark">
+                <tr>
+                    <th>Brand</th>
+                    <th>Model</th>
+                    <th>Price</th>
+                    <th>Color</th>
+                    <th>Screen Size</th>
+                    <th>Status</th>
+                    <th>Manufacturer Country</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for mobile in mobiles %}
+                <tr>
+                    <td>{{ mobile.brand.name }}</td>
+                    <td>{{ mobile.model }}</td>
+                    <td>${{ mobile.price }}</td>
+                    <td>{{ mobile.color }}</td>
+                    <td>{{ mobile.screen_size }}"</td>
+                    <td>{{ mobile.status }}</td>
+                    <td>{% if mobile.manufacturer_country == mobile.brand.nationality %} {{ mobile.manufacturer_country }}  {% else %} <i style="color: chocolate;">{{ mobile.manufacturer_country }}</i> {% endif %}</td>
+                    <td>
+                        <a href="{% url 'edit_mobile' mobile.pk %}" class="btn btn-warning btn-sm">Edit</a>
+                        <a href="{% url 'delete_mobile' mobile.pk %}" class="btn btn-danger btn-sm">Delete</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- JavaScript for Table Search -->
+    <script>
+        document.getElementById('searchBox').addEventListener('keyup', function() {
+            const searchValue = this.value.toLowerCase();
+            const rows = document.querySelectorAll('#inventoryTable tbody tr');
+
+            rows.forEach(row => {
+                const cells = Array.from(row.cells);
+                const matches = cells.some(cell => cell.textContent.toLowerCase().includes(searchValue));
+                row.style.display = matches ? '' : 'none';
+            });
+        });
+    </script>
+</body>
+</html>
